@@ -14,6 +14,10 @@
   "main": "lib/index.node.js",
   "browser": "lib/index.js",
   "types": "src/index.ts",
+  "files": [
+    "lib/*",
+    "src/index.ts"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://gitlab.com/lollipop.onl/axios-logger.git"
