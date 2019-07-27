@@ -1,0 +1,34 @@
+image: node:10
+
+stages:
+  - test
+  - publish
+
+npm-audit:
+  stage: test
+  script:
+    - touch ~/.npmrc
+    - echo "//registry.npmjs.org/:_authtoken=${NPMJS_PUBLISH_TOKEN}" >> ~/.npmrc
+    - npm install --package-lock-only
+    - npm audit
+
+npm-can-publish:
+  stage: test
+  script:
+    - touch ~/.npmrc
+    - echo "//registry.npmjs.org/:_authtoken=${NPMJS_PUBLISH_TOKEN}" >> ~/.npmrc
+    - npm install -g can-npm-publish
+    - can-npm-publish
+  only:
+    - master
+
+npm-publish:
+  stage: publish
+  script:
+    - touch ~/.npmrc
+    - echo "//registry.npmjs.org/:_authtoken=${NPMJS_PUBLISH_TOKEN}" >> ~/.npmrc
+    - npm install
+    - npm build
+    - npm publish
+  only:
+    - /^v\d+\.\d+\.\d/
