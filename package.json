@@ -41,7 +41,6 @@
   "peerDependencies": {
     "@typescript-eslint/eslint-plugin": "^1.13.0",
     "@typescript-eslint/parser": "^1.13.0",
-    "eslint-config-teamlab": "github:team-lab/eslint-config-teamlab#feature/imports-rules",
     "eslint-config-typescript": "^3.0.0",
     "eslint-plugin-import": "^2.18.2"
   },
