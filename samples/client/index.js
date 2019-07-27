@@ -21,4 +21,4 @@ request.get('todos/1', {
     foo: 'hello'
   }
 }).catch(noop);
-request.get('todos/__').catch(noop);
+request.get('todos/invalid_link').catch(noop);

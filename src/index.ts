@@ -2,22 +2,25 @@ import axios, { AxiosResponse, AxiosError } from 'axios';
 import * as queryString from 'querystring';
 
 /** Platforms */
-export type Platform = 'vanilla' | 'node' | 'nuxt';
+export type Platform = 'client' | 'node' | 'nuxt';
 
 const isClient = process.env.PLATFORM === 'client';
 
 class AxiosLogger {
   /** Axios request base URL */
-  public baseURL = '';
+  public baseURL!: string;
 
   /** Running platform */
-  public platform?: Platform;
+  public platform!: Platform;
 
   /** Is displayed the request payload when node.js */
-  public showRequest = false;
+  public showRequest!: boolean
 
   /** Is displayed the response data when node.js */
-  public showResponse = false;
+  public showResponse!: boolean;
+
+  /** Is NOT display logs */
+  public quiet!: boolean;
 
   /**
    * @constructor
@@ -28,30 +31,21 @@ class AxiosLogger {
     platform?: Platform;
     request?: boolean;
     response?: boolean;
+    quiet?: boolean;
   }) {
     if (!args) {
       return;
     }
 
     const {
-      baseURL, platform, request, response
+      baseURL = '', platform = 'client', request = false, response = false, quiet = false
     } = args;
 
-    if (baseURL) {
-      this.baseURL = baseURL.replace(/\/$/, '');
-    }
-
-    if (platform) {
-      this.platform = platform;
-    }
-
-    if (request) {
-      this.showRequest = request;
-    }
-
-    if (response) {
-      this.showResponse = response;
-    }
+    this.baseURL = baseURL.replace(/\/$/, '');
+    this.platform = platform;
+    this.showRequest = request;
+    this.showResponse = response;
+    this.quiet = quiet;
 
     this.log = this.log.bind(this);
   }
@@ -61,6 +55,10 @@ class AxiosLogger {
   }
 
   public log (response: AxiosResponse | AxiosError): void {
+    if (this.quiet) {
+      return;
+    }
+
     // When the request is canceled
     if (axios.isCancel(response)) {
       this.printCancelLog();
