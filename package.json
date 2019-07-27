@@ -1,0 +1,46 @@
+{
+  "name": "@lollipop-onl/axios-logger",
+  "version": "0.1.0",
+  "description": "Pretty Axios logger",
+  "keywords": [
+    "axios"
+  ],
+  "homepage": "https://gitlab.com/lollipop.onl/axios-logger#readme",
+  "bugs": {
+    "url": "https://gitlab.com/lollipop.onl/axios-logger/issues"
+  },
+  "license": "MIT",
+  "author": "lollipop.onl",
+  "main": "lib/index.node.js",
+  "browser": "lib/index.js",
+  "types": "src/index.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/lollipop.onl/axios-logger.git"
+  },
+  "scripts": {
+    "lint": "eslint --ext ts src",
+    "build": "concurrently \"npm run build:client\" \"npm run build:node\"",
+    "build:client": "cross-env PLATFORM=client parcel build src/index.ts -d lib -o index.js --no-source-maps",
+    "build:node": "cross-env PLATFORM=node parcel build src/index.node.ts -d lib -o index.node.js -t node --no-source-maps",
+    "sample:client": "parcel samples/client/index.html -d samples/dist",
+    "sample:node": "node samples/node/index.js"
+  },
+  "devDependencies": {
+    "@types/node": "^12.6.8",
+    "@typescript-eslint/eslint-plugin": "^1.13.0",
+    "@typescript-eslint/parser": "^1.13.0",
+    "concurrently": "^4.1.1",
+    "cross-env": "^5.2.0",
+    "eslint": "^6.1.0",
+    "eslint-config-teamlab": "github:team-lab/eslint-config-teamlab#feature/imports-rules",
+    "eslint-config-typescript": "^3.0.0",
+    "eslint-plugin-import": "^2.18.2",
+    "parcel-bundler": "^1.12.3",
+    "typescript": "^3.5.3"
+  },
+  "dependencies": {
+    "axios": "^0.19.0",
+    "axios-logger": "^2.1.0"
+  }
+}

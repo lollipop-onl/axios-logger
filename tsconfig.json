@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "module": "esnext",
+    "target": "es2015",
+    "moduleResolution": "node",
+    "lib": ["dom", "esnext"],
+    "strict": true,
+    "noImplicitAny": true,
+    "sourceMap": false,
+    "removeComments": false,
+    "types": ["@types/node", "src/process.d.ts"]
+  }
+}
