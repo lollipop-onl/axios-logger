@@ -48,9 +48,10 @@ request.interceptors.response.use(...Logger.response);
 ```ts
 const logger = new AxiosLogger({
   baseURL: 'https://jsonplaceholder.typicode.com';
-  platform: 'client';
+  isServer: false;
   showRequest: true;
   showResponse: true;
+  quiet: false;
 });
 ```
 
@@ -60,33 +61,11 @@ default: `''`
 
 Here you specify the base URL of the main request. It is omitted from the displayed request URL (Only client).
 
-### `platform` (`'client' | 'node' | 'nuxt'`)
+### `isServer` (`boolean`)
 
-default: Automatic discrimination between `client` and `node`
+default: Automatic discrimination between Node.js and browser
 
 This parameter is affected for log style.
-
-If `nuxt` is specified, it will be executed according to the result of `process.client/server`.
-
-```ts
-// plugins/axios.ts
-import AxiosLogger from "@lollipop-onl/axios-logger";
-
-export default ({ $axios, isDev }) => {
-  const logger = new AxiosLogger({
-    platform: "nuxt",
-    quiet: !isDev
-  });
-
-  $axios.onResponse(response => {
-    logger.response(response);
-  });
-
-  $axios.onResponseError(response => {
-    logger.response(response);
-  });
-};
-```
 
 ### `showRequest`/`showResponse` (`boolean`)
 
@@ -109,6 +88,30 @@ const logger = new AxiosLogger();
 
 logger.showResponse = true;
 logger.quiet = true;
+```
+
+## for Nuxt
+
+In Nuxt.js, `isServer` or `process.server` passes to `isServer` property.
+
+```ts
+// plugins/axios.ts
+import AxiosLogger from "@lollipop-onl/axios-logger";
+
+export default ({ $axios, isDev, isServer }) => {
+  const logger = new AxiosLogger({
+    isServer,
+    quiet: !isDev
+  });
+
+  $axios.onResponse(response => {
+    logger.log(response);
+  });
+
+  $axios.onResponseError(response => {
+    logger.log(response);
+  });
+};
 ```
 
 ## Licence

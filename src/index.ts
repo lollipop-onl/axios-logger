@@ -1,17 +1,12 @@
 import axios, { AxiosResponse, AxiosError } from 'axios';
 import * as queryString from 'querystring';
 
-/** Platforms */
-export type Platform = 'client' | 'node' | 'nuxt';
-
-const isClient = process.env.PLATFORM === 'client';
-
 class AxiosLogger {
   /** Axios request base URL */
   public baseURL!: string;
 
   /** Running platform */
-  public platform!: Platform;
+  public isServer!: boolean;
 
   /** Is displayed the request payload when node.js */
   public showRequest!: boolean
@@ -28,7 +23,7 @@ class AxiosLogger {
    */
   constructor (args?: {
     baseURL?: string;
-    platform?: Platform;
+    isServer?: boolean;
     request?: boolean;
     response?: boolean;
     quiet?: boolean;
@@ -38,11 +33,11 @@ class AxiosLogger {
     }
 
     const {
-      baseURL = '', platform = 'client', request = false, response = false, quiet = false
+      baseURL = '', isServer = process.env.PLATFORM !== 'client', request = false, response = false, quiet = false
     } = args;
 
     this.baseURL = baseURL.replace(/\/$/, '');
-    this.platform = platform;
+    this.isServer = isServer;
     this.showRequest = request;
     this.showResponse = response;
     this.quiet = quiet;
@@ -62,6 +57,8 @@ class AxiosLogger {
     // When the request is canceled
     if (axios.isCancel(response)) {
       this.printCancelLog();
+
+      return;
     }
 
     const { config } = response;
@@ -85,11 +82,6 @@ class AxiosLogger {
     const status = response.response ? response.response.status : response.code;
 
     this.printResponseLog(method, url, status, request, response.response);
-  }
-
-  /** Whether the platform is A */
-  private get isNuxt (): boolean {
-    return this.platform === 'nuxt';
   }
 
   /**
@@ -138,7 +130,7 @@ class AxiosLogger {
       }
     }
 
-    if (this.isNuxt ? process.server : !isClient) {
+    if (this.isServer) {
       const style = isSuccess
         ? '\x1b[42m \x1b[0m \x1b[32m%s\x1b[0m'
         : '\x1b[41m \x1b[0m \x1b[31m%s\x1b[0m';
@@ -180,13 +172,13 @@ class AxiosLogger {
    * Print request canceled log
    */
   private printCancelLog (): void {
-    if (this.isNuxt ? process.client : isClient) {
+    if (this.isServer) {
+      console.log('[AxiosLogger] Canceled request');
+    } else {
       console.log(
         '%ccanceled',
         'background: #eee; border-left: 10px solid #FFA552; color: #8C5A2D; padding: 2px 10px; font-weight: bold'
       );
-    } else {
-      console.log('[AxiosLogger] Canceled request');
     }
   }
 }
