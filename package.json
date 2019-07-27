@@ -32,19 +32,20 @@
   },
   "devDependencies": {
     "@types/node": "^12.6.8",
-    "@typescript-eslint/eslint-plugin": "^1.13.0",
-    "@typescript-eslint/parser": "^1.13.0",
     "concurrently": "^4.1.1",
     "cross-env": "^5.2.0",
     "eslint": "^6.1.0",
-    "eslint-config-teamlab": "github:team-lab/eslint-config-teamlab#feature/imports-rules",
-    "eslint-config-typescript": "^3.0.0",
-    "eslint-plugin-import": "^2.18.2",
     "parcel-bundler": "^1.12.3",
     "typescript": "^3.5.3"
   },
+  "peerDependencies": {
+    "@typescript-eslint/eslint-plugin": "^1.13.0",
+    "@typescript-eslint/parser": "^1.13.0",
+    "eslint-config-teamlab": "github:team-lab/eslint-config-teamlab#feature/imports-rules",
+    "eslint-config-typescript": "^3.0.0",
+    "eslint-plugin-import": "^2.18.2"
+  },
   "dependencies": {
-    "axios": "^0.19.0",
-    "axios-logger": "^2.1.0"
+    "axios": "^0.19.0"
   }
 }
