@@ -4,14 +4,6 @@ stages:
   - test
   - publish
 
-npm-audit:
-  stage: test
-  script:
-    - touch ~/.npmrc
-    - echo "//registry.npmjs.org/:_authtoken=${NPMJS_PUBLISH_TOKEN}" >> ~/.npmrc
-    - npm install --package-lock-only
-    - npm audit
-
 npm-can-publish:
   stage: test
   script:
@@ -20,7 +12,7 @@ npm-can-publish:
     - npm install -g can-npm-publish
     - can-npm-publish
   only:
-    - master
+    - /^v\d+\.\d+\.\d/
 
 npm-publish:
   stage: publish

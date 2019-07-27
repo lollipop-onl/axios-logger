@@ -31,11 +31,15 @@ request.interceptors.response.use(...Logger.response);
 
 ### Browser console
 
-![](docs/browser-console.png)
+<p style="text-align: center">
+  <img src="https://gitlab.com/lollipop.onl/axios-logger/raw/master/docs/browser-console.png" />
+</p>
 
 ### Node.js console
 
-![](docs/node-terminal.png)
+<p style="text-align: center">
+  <img src="https://gitlab.com/lollipop.onl/axios-logger/raw/master/docs/node-terminal.png" />
+</p>
 
 ## Documentation
 
