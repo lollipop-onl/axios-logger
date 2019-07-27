@@ -20,7 +20,7 @@ npm-publish:
     - touch ~/.npmrc
     - echo "//registry.npmjs.org/:_authtoken=${NPMJS_PUBLISH_TOKEN}" >> ~/.npmrc
     - npm install
-    - npm build
+    - npm run build
     - npm publish
   only:
     - /^v\d+\.\d+\.\d/
