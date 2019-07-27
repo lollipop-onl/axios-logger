@@ -1,0 +1,17 @@
+---
+env:
+  browser: true
+  node: true
+parserOptions:
+  project: tsconfig.json
+extends:
+  - teamlab/typescript
+rules:
+  no-console: 'off'
+  class-methods-use-this: 'off'
+  no-param-reassign: 'off'
+  complexity: 'off'
+  import/no-unused-modules: 'off'
+  import/exports-last: 'off'
+  import/prefer-default-export: 'off'
+  '@typescript-eslint/unbound-method': 'off'
