@@ -1,5 +1,5 @@
 const axios = require('axios');
-const AxiosLogger = require('../../');
+const AxiosLogger = require('../..');
 
 const BASE_URL = 'https://jsonplaceholder.typicode.com';
 const logger = new AxiosLogger({

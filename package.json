@@ -11,12 +11,10 @@
   },
   "license": "MIT",
   "author": "lollipop.onl",
-  "main": "lib/index.node.js",
-  "browser": "lib/index.js",
-  "types": "src/index.ts",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "files": [
-    "lib/*",
-    "src/index.ts"
+    "lib/*"
   ],
   "repository": {
     "type": "git",
@@ -24,9 +22,7 @@
   },
   "scripts": {
     "lint": "eslint --ext ts src",
-    "build": "concurrently \"npm run build:client\" \"npm run build:node\"",
-    "build:client": "cross-env PLATFORM=client parcel build src/index.ts -d lib -o index.js --no-source-maps",
-    "build:node": "cross-env PLATFORM=node parcel build src/index.node.ts -d lib -o index.node.js -t node --no-source-maps",
+    "build": "tsc",
     "sample:client": "parcel samples/client/index.html -d samples/dist",
     "sample:node": "node samples/node/index.js"
   },

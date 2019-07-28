@@ -1,4 +1,4 @@
-import axios, { AxiosResponse, AxiosError, CancelStatic } from 'axios';
+import axios, { AxiosResponse, AxiosError } from 'axios';
 import * as queryString from 'querystring';
 
 class AxiosLogger {
@@ -33,7 +33,11 @@ class AxiosLogger {
     }
 
     const {
-      baseURL = '', isServer = process.env.PLATFORM !== 'client', request = false, response = false, quiet = false
+      baseURL = '',
+      isServer = typeof window === 'undefined' || typeof document === 'undefined',
+      request = false,
+      response = false,
+      quiet = false
     } = args;
 
     this.baseURL = baseURL.replace(/\/$/, '');
@@ -183,4 +187,4 @@ class AxiosLogger {
   }
 }
 
-export default AxiosLogger;
+export = AxiosLogger;
