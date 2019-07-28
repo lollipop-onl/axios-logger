@@ -11,7 +11,9 @@ rules:
   class-methods-use-this: 'off'
   no-param-reassign: 'off'
   complexity: 'off'
+  no-extra-parens: 'off'
   import/no-unused-modules: 'off'
   import/exports-last: 'off'
   import/prefer-default-export: 'off'
   '@typescript-eslint/unbound-method': 'off'
+  '@typescript-eslint/no-extra-parens': error

@@ -1,4 +1,4 @@
-import axios, { AxiosResponse, AxiosError } from 'axios';
+import axios, { AxiosResponse, AxiosError, CancelStatic } from 'axios';
 import * as queryString from 'querystring';
 
 class AxiosLogger {
@@ -56,7 +56,7 @@ class AxiosLogger {
 
     // When the request is canceled
     if (axios.isCancel(response)) {
-      this.printCancelLog();
+      this.printCancelLog((response as any).message);
 
       return;
     }
@@ -164,19 +164,19 @@ class AxiosLogger {
 
     console.groupCollapsed(`%c${method}: ${path} - ${status}`, style);
     console.log('Request  ➡️', request);
-    console.log('Response ⬅️', response);
+    console.log('Response ⬅️', response.data);
     console.groupEnd();
   }
 
   /**
    * Print request canceled log
    */
-  private printCancelLog (): void {
+  private printCancelLog (message = '(no message)'): void {
     if (this.isServer) {
-      console.log('[AxiosLogger] Canceled request');
+      console.log('\x1b[43m \x1b[0m \x1b[33m%s\x1b[0m', `Canceled - ${message}`);
     } else {
       console.log(
-        '%ccanceled',
+        `%ccanceled - ${message}`,
         'background: #eee; border-left: 10px solid #FFA552; color: #8C5A2D; padding: 2px 10px; font-weight: bold'
       );
     }

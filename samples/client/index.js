@@ -11,14 +11,23 @@ const request = axios.create({
   responseType: 'json'
 });
 const noop = () => {};
+const cancelSource = axios.CancelToken.source();
 
 request.interceptors.response.use(...logger.response);
 
 console.log('Sample app is ready.');
 
-request.get('todos/1', {
-  params: {
-    foo: 'hello'
-  }
-}).catch(noop);
+request
+  .get('todos/1', {
+    params: {
+      foo: 'hello'
+    }
+  })
+  .catch(noop);
 request.get('todos/invalid_link').catch(noop);
+// eslint-disable-next-line
+request.get('todos/2', {
+  cancelToken: cancelSource.token
+});
+
+cancelSource.cancel();

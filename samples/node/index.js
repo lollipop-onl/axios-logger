@@ -10,6 +10,8 @@ const request = axios.create({
   responseType: 'json'
 });
 const noop = () => {};
+const { CancelToken } = axios;
+const cancelSource = CancelToken.source();
 
 request.interceptors.response.use(...logger.response);
 
@@ -19,3 +21,7 @@ request.get('/todos/1', {
   }
 }).catch(noop);
 request.get('/todos/__1').catch(noop);
+request.get('todos/2', {
+  cancelToken: cancelSource.token
+}).catch(noop);
+cancelSource.cancel();
