@@ -155,7 +155,7 @@ class AxiosLogger {
         if (isSuccess) {
           console.log(response);
         } else {
-          console.log(response.data);
+          console.log(response);
         }
       }
 
@@ -168,7 +168,7 @@ class AxiosLogger {
 
     console.groupCollapsed(`%c${method}: ${path} - ${status}`, style);
     console.log('Request  ➡️', request);
-    console.log('Response ⬅️', response.data);
+    console.log('Response ⬅️', response);
     console.groupEnd();
   }
 
