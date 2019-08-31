@@ -32,13 +32,13 @@ request.interceptors.response.use(...Logger.response);
 ### Browser console
 
 <p style="text-align: center">
-  <img src="https://gitlab.com/lollipop.onl/axios-logger/raw/master/docs/browser-console.png" />
+  <img src="https://i.gyazo.com/bf4bcdca5469e2300d726a3b5818fcd3.png" />
 </p>
 
 ### Node.js console
 
 <p style="text-align: center">
-  <img src="https://gitlab.com/lollipop.onl/axios-logger/raw/master/docs/node-terminal.png" />
+  <img src="https://i.gyazo.com/aa5348932530d0dab00862ca41971cf6.png" />
 </p>
 
 ## Documentation
