@@ -54,7 +54,7 @@ class AxiosLogger {
   }
 
   public log (response: AxiosResponse | AxiosError): void {
-    if (this.quiet || 'config' in response) {
+    if (this.quiet || !('config' in response)) {
       return;
     }
 
