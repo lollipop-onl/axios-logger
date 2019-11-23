@@ -53,16 +53,16 @@ class AxiosLogger {
     return [this.log, this.log];
   }
 
-  public log (response: AxiosResponse | AxiosError): void {
+  public log (response: AxiosResponse | AxiosError): AxiosResponse | AxiosError {
     if (this.quiet || !('config' in response)) {
-      return;
+      return response;
     }
 
     // When the request is canceled
     if (axios.isCancel(response)) {
       this.printCancelLog((response as any).message);
 
-      return;
+      return response;
     }
 
     const { config } = response;
@@ -79,13 +79,15 @@ class AxiosLogger {
 
       this.printResponseLog(method, url, status, requestData, responseData);
 
-      return;
+      return response;
     }
 
     // When receive error response
     const status = response.response ? response.response.status : response.code;
 
     this.printResponseLog(method, url, status, request, response.response);
+
+    return response;
   }
 
   /**
