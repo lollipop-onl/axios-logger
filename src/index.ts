@@ -9,7 +9,7 @@ class AxiosLogger {
   public isServer!: boolean;
 
   /** Is displayed the request payload when node.js */
-  public showRequest!: boolean
+  public showRequest!: boolean;
 
   /** Is displayed the response data when node.js */
   public showResponse!: boolean;
@@ -53,16 +53,16 @@ class AxiosLogger {
     return [this.log, this.log];
   }
 
-  public log (response: AxiosResponse | AxiosError): AxiosResponse | AxiosError {
+  public log (response: AxiosResponse | AxiosError): AxiosResponse | Promise<AxiosError> {
     if (this.quiet || !('config' in response)) {
-      return response;
+      return this.wrapRejectIfNeeded(response as any);
     }
 
     // When the request is canceled
     if (axios.isCancel(response)) {
       this.printCancelLog((response as any).message);
 
-      return response;
+      return this.wrapRejectIfNeeded(response as any);
     }
 
     const { config } = response;
@@ -79,7 +79,7 @@ class AxiosLogger {
 
       this.printResponseLog(method, url, status, requestData, responseData);
 
-      return response;
+      return this.wrapRejectIfNeeded(response);
     }
 
     // When receive error response
@@ -87,7 +87,7 @@ class AxiosLogger {
 
     this.printResponseLog(method, url, status, request, response.response);
 
-    return response;
+    return this.wrapRejectIfNeeded(response);
   }
 
   /**
@@ -186,6 +186,17 @@ class AxiosLogger {
         'background: #eee; border-left: 10px solid #FFA552; color: #8C5A2D; padding: 2px 10px; font-weight: bold'
       );
     }
+  }
+
+  /**
+   * It wrap in Promise.reject if the response when AxiosError
+   */
+  private wrapRejectIfNeeded(response: AxiosResponse): AxiosResponse;
+  private wrapRejectIfNeeded(response: AxiosError): Promise<AxiosError>;
+  private wrapRejectIfNeeded(response: AxiosResponse | AxiosError) {
+    const isAxiosError = 'isAxiosError' in response && response.isAxiosError;
+
+    return isAxiosError ? Promise.reject<AxiosError>(response) : response;
   }
 }
 

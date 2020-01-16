@@ -27,16 +27,17 @@
     "sample:node": "node samples/node/index.js"
   },
   "devDependencies": {
+    "@lollipop-onl/axios-logger": "^0.1.11",
     "@types/node": "^12.6.8",
+    "@typescript-eslint/eslint-plugin": "^1.13.0",
+    "@typescript-eslint/parser": "^1.13.0",
     "concurrently": "^4.1.1",
     "cross-env": "^5.2.0",
     "eslint": "^6.1.0",
-    "parcel-bundler": "^1.12.3",
-    "typescript": "^3.5.3",
-    "@typescript-eslint/eslint-plugin": "^1.13.0",
-    "@typescript-eslint/parser": "^1.13.0",
     "eslint-config-typescript": "^3.0.0",
-    "eslint-plugin-import": "^2.18.2"
+    "eslint-plugin-import": "^2.18.2",
+    "parcel-bundler": "^1.12.3",
+    "typescript": "^3.5.3"
   },
   "dependencies": {
     "axios": "^0.19.0"
