@@ -24,7 +24,8 @@
     "lint": "eslint --ext ts src",
     "build": "tsc",
     "sample:client": "parcel samples/client/index.html -d samples/dist",
-    "sample:node": "node samples/node/index.js"
+    "sample:node": "node samples/node/index.js",
+    "release": "yarn lint && yarn version --patch && yarn build && yarn publish && git push origin --tags"
   },
   "devDependencies": {
     "@lollipop-onl/axios-logger": "^0.1.11",
