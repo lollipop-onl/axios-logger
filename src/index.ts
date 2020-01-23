@@ -3,7 +3,7 @@ import * as queryString from 'querystring';
 
 class AxiosLogger {
   /** Axios request base URL */
-  public baseURL!: string;
+  public baseURL!: string | string[] | RegExp;
 
   /** Running platform */
   public isServer!: boolean;
@@ -22,7 +22,7 @@ class AxiosLogger {
    * @param args.baseURL Main request base URL
    */
   constructor (args?: {
-    baseURL?: string;
+    baseURL?: string | string[] | RegExp;
     isServer?: boolean;
     request?: boolean;
     response?: boolean;
@@ -40,7 +40,7 @@ class AxiosLogger {
       quiet = false
     } = args;
 
-    this.baseURL = baseURL.replace(/\/$/, '');
+    this.baseURL = baseURL;
     this.isServer = isServer;
     this.showRequest = request;
     this.showResponse = response;
@@ -106,7 +106,7 @@ class AxiosLogger {
     response?: any
   ): void {
     // Ignore queries
-    const path = url.replace(/^([^?]*).*/, '$1').replace(this.baseURL, '');
+    const path = this.optimizePath(url);
     const isSuccess = status < 400;
 
     // Clone the request if it is object
@@ -197,6 +197,33 @@ class AxiosLogger {
     const isAxiosError = 'isAxiosError' in response && response.isAxiosError;
 
     return isAxiosError ? Promise.reject<AxiosError>(response) : response;
+  }
+
+  /**
+   * Optimize displaying path
+   */
+  private optimizePath(url: string): string {
+    const path = url.replace(/^([^?]*).*/, '$1');
+
+    if (!this.baseURL) {
+      return path;
+    }
+
+    if (!Array.isArray(this.baseURL)) {
+      return path.replace(this.baseURL, '');
+    }
+
+    for (let i = 0; i < path.length; i++) {
+      const basePath = this.baseURL[i];
+
+      if (!path.startsWith(basePath)) {
+        continue;
+      }
+
+      return path.replace(basePath, '');
+    }
+
+    return path;
   }
 }
 
