@@ -1,6 +1,6 @@
 {
   "name": "@lollipop-onl/axios-logger",
-  "version": "0.1.13",
+  "version": "0.1.14",
   "description": "Pretty Axios logger",
   "keywords": [
     "axios"
@@ -25,10 +25,11 @@
     "build": "tsc",
     "sample:client": "parcel samples/client/index.html -d samples/dist",
     "sample:node": "node samples/node/index.js",
-    "release": "yarn lint && yarn version --patch && yarn build && yarn publish && git push origin --tags"
+    "release": "yarn version --patch && yarn build && yarn publish && git push origin --tags"
   },
   "devDependencies": {
     "@lollipop-onl/axios-logger": "^0.1.11",
+    "@team-lab/eslint-config": "^0.1.1",
     "@types/node": "^12.6.8",
     "@typescript-eslint/eslint-plugin": "^1.13.0",
     "@typescript-eslint/parser": "^1.13.0",
