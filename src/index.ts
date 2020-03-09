@@ -54,7 +54,7 @@ class AxiosLogger {
   }
 
   public log (response: AxiosResponse | AxiosError): AxiosResponse | Promise<AxiosError> {
-    if (this.quiet || !('config' in response)) {
+    if (this.quiet) {
       return this.wrapRejectIfNeeded(response as any);
     }
 
@@ -62,6 +62,10 @@ class AxiosLogger {
     if (axios.isCancel(response)) {
       this.printCancelLog((response as any).message);
 
+      return this.wrapRejectIfNeeded(response as any);
+    }
+
+    if (!('config' in response)) {
       return this.wrapRejectIfNeeded(response as any);
     }
 
