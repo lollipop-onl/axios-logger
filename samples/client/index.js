@@ -30,4 +30,10 @@ request.get('todos/2', {
   cancelToken: cancelSource.token
 });
 
+request.post('/posts?key=value', { id: 0 }, {
+  params: {
+    example: 'yes',
+  },
+});
+
 cancelSource.cancel();

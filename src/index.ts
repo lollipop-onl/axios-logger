@@ -1,4 +1,5 @@
 import axios, { AxiosResponse, AxiosError } from 'axios';
+import { parse } from 'path';
 import * as queryString from 'querystring';
 
 class AxiosLogger {
@@ -73,15 +74,14 @@ class AxiosLogger {
     const {
       method, url, params, data
     } = config;
-    const request = params || data || {};
+    const query = `${url}`.split('?')[1];
+    const search = query && queryString.parse(query);
 
     // When receive normal response
     if ('status' in response) {
       const { data: responseData, status } = response;
-      const query = `${url}`.split('?')[1];
-      const requestData = query ? queryString.parse(query) : request;
 
-      this.printResponseLog(method, url, status, requestData, responseData);
+      this.printResponseLog(method, url, status, { search, params, data }, responseData);
 
       return this.wrapRejectIfNeeded(response);
     }
@@ -89,7 +89,7 @@ class AxiosLogger {
     // When receive error response
     const status = response.response ? response.response.status : response.code;
 
-    this.printResponseLog(method, url, status, request, response.response);
+    this.printResponseLog(method, url, status, { search, params, data }, response.response);
 
     return this.wrapRejectIfNeeded(response);
   }
@@ -106,30 +106,35 @@ class AxiosLogger {
     method = 'unknown',
     url = 'unknown',
     status: string | number = 'unknown',
-    request?: any,
+    requests?: {
+      search?: any;
+      params?: any;
+      data?: any;
+    },
     response?: any
   ): void {
     // Ignore queries
     const path = this.optimizePath(url);
     const isSuccess = status < 400;
+    const parseRequest = (request: any): any | undefined => {
+      // Clone the request if it is object
+      if (typeof request === 'object') {
+        try {
+          return JSON.parse(JSON.stringify(request));
+        } catch {
+          // Do nothing
+        }
+      }
 
-    // Clone the request if it is object
-    if (typeof request === 'object') {
       try {
-        request = JSON.parse(JSON.stringify(request));
-      } catch (e) {
-        // Do nothing
+        return JSON.parse(request);
+      } catch {
+        return request;
       }
     }
-
-    // Parse the request if it isn't object
-    if (typeof request !== 'object') {
-      try {
-        request = JSON.parse(request);
-      } catch (e) {
-        // Do nothing
-      }
-    }
+    const search = parseRequest(requests?.search);
+    const params = parseRequest(requests?.params);
+    const data = parseRequest(requests?.data);
 
     // Clone the request if it is object
     if (typeof response === 'object') {
@@ -151,12 +156,24 @@ class AxiosLogger {
       console.log(style, `${method}: ${url} - ${status}`);
 
       if (this.showRequest) {
-        console.log(titleStyle, 'Request Payload');
-        console.log(request);
+        if (search != null) {
+          console.log(titleStyle, 'search');
+          console.log(search);
+        }
+
+        if (params != null) {
+          console.log(titleStyle, 'params');
+          console.log(params);
+        }
+
+        if (data != null) {
+          console.log(titleStyle, 'body');
+          console.log(data);
+        }
       }
 
       if (this.showResponse) {
-        console.log(titleStyle, 'Response Data');
+        console.log(titleStyle, 'response');
 
         if (isSuccess) {
           console.log(response);
@@ -173,8 +190,20 @@ class AxiosLogger {
       : 'background: #eee; border-left: 10px solid #A53860; color: #69140E; padding: 2px 10px';
 
     console.groupCollapsed(`%c${method}: ${path} - ${status}`, style);
-    console.log('Request  ➡️', request);
-    console.log('Response ⬅️', response);
+
+    if (search != null) {
+      console.log('search :', search);
+    }
+
+    if (params != null) {
+      console.log('params :', params);
+    }
+
+    if (data != null) {
+      console.log(' data  :', data);
+    }
+
+    console.log('%cresponse\n', 'padding-bottom: 0.5em; font-weight: bold', response);
     console.groupEnd();
   }
 
