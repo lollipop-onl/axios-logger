@@ -1,6 +1,6 @@
-import axios, { AxiosResponse, AxiosError } from 'axios';
-import { parse } from 'path';
-import * as queryString from 'querystring';
+import axios, { AxiosResponse, AxiosError } from "axios";
+import { parse } from "path";
+import * as queryString from "querystring";
 
 class AxiosLogger {
   /** Axios request base URL */
@@ -18,27 +18,33 @@ class AxiosLogger {
   /** Is NOT display logs */
   public quiet!: boolean;
 
+  /** Enable colorful logs */
+  public color!: boolean;
+
   /**
    * @constructor
    * @param args.baseURL Main request base URL
    */
-  constructor (args?: {
+  constructor(args?: {
     baseURL?: string | string[] | RegExp;
     isServer?: boolean;
     request?: boolean;
     response?: boolean;
     quiet?: boolean;
+    color?: boolean;
   }) {
     if (!args) {
       return;
     }
 
     const {
-      baseURL = '',
-      isServer = typeof window === 'undefined' || typeof document === 'undefined',
+      baseURL = "",
+      isServer = typeof window === "undefined" ||
+        typeof document === "undefined",
       request = false,
       response = false,
-      quiet = false
+      quiet = false,
+      color = true,
     } = args;
 
     this.baseURL = baseURL;
@@ -46,15 +52,18 @@ class AxiosLogger {
     this.showRequest = request;
     this.showResponse = response;
     this.quiet = quiet;
+    this.color = color;
 
     this.log = this.log.bind(this);
   }
 
-  public get response (): [AxiosLogger['log'], AxiosLogger['log']] {
+  public get response(): [AxiosLogger["log"], AxiosLogger["log"]] {
     return [this.log, this.log];
   }
 
-  public log (response: AxiosResponse | AxiosError): AxiosResponse | Promise<AxiosError> {
+  public log(
+    response: AxiosResponse | AxiosError
+  ): AxiosResponse | Promise<AxiosError> {
     if (this.quiet) {
       return this.wrapRejectIfNeeded(response as any);
     }
@@ -66,22 +75,26 @@ class AxiosLogger {
       return this.wrapRejectIfNeeded(response as any);
     }
 
-    if (!('config' in response)) {
+    if (!("config" in response)) {
       return this.wrapRejectIfNeeded(response as any);
     }
 
     const { config } = response;
-    const {
-      method, url, params, data
-    } = config;
-    const query = `${url}`.split('?')[1];
+    const { method, url, params, data } = config;
+    const query = `${url}`.split("?")[1];
     const search = query && queryString.parse(query);
 
     // When receive normal response
-    if ('status' in response) {
+    if ("status" in response) {
       const { data: responseData, status } = response;
 
-      this.printResponseLog(method, url, status, { search, params, data }, responseData);
+      this.printResponseLog(
+        method,
+        url,
+        status,
+        { search, params, data },
+        responseData
+      );
 
       return this.wrapRejectIfNeeded(response);
     }
@@ -89,7 +102,13 @@ class AxiosLogger {
     // When receive error response
     const status = response.response ? response.response.status : response.code;
 
-    this.printResponseLog(method, url, status, { search, params, data }, response.response);
+    this.printResponseLog(
+      method,
+      url,
+      status,
+      { search, params, data },
+      response.response
+    );
 
     return this.wrapRejectIfNeeded(response);
   }
@@ -102,10 +121,10 @@ class AxiosLogger {
    * @param [request] Request data
    * @param [response] Response data
    */
-  private printResponseLog (
-    method = 'unknown',
-    url = 'unknown',
-    status: string | number = 'unknown',
+  private printResponseLog(
+    method = "unknown",
+    url = "unknown",
+    status: string | number = "unknown",
     requests?: {
       search?: any;
       params?: any;
@@ -118,7 +137,7 @@ class AxiosLogger {
     const isSuccess = status < 400;
     const parseRequest = (request: any): any | undefined => {
       // Clone the request if it is object
-      if (typeof request === 'object') {
+      if (typeof request === "object") {
         try {
           return JSON.parse(JSON.stringify(request));
         } catch {
@@ -131,13 +150,13 @@ class AxiosLogger {
       } catch {
         return request;
       }
-    }
+    };
     const search = parseRequest(requests?.search);
     const params = parseRequest(requests?.params);
     const data = parseRequest(requests?.data);
 
     // Clone the request if it is object
-    if (typeof response === 'object') {
+    if (typeof response === "object") {
       try {
         response = JSON.parse(JSON.stringify(response));
       } catch (e) {
@@ -147,33 +166,40 @@ class AxiosLogger {
 
     if (this.isServer) {
       const style = isSuccess
-        ? '\x1b[42m \x1b[0m \x1b[32m%s\x1b[0m'
-        : '\x1b[41m \x1b[0m \x1b[31m%s\x1b[0m';
+        ? "\x1b[42m \x1b[0m \x1b[32m%s\x1b[0m"
+        : "\x1b[41m \x1b[0m \x1b[31m%s\x1b[0m";
       const titleStyle = isSuccess
-        ? '\x1b[42m \x1b[0m %s'
-        : '\x1b[41m \x1b[0m %s';
+        ? "\x1b[42m \x1b[0m %s"
+        : "\x1b[41m \x1b[0m %s";
+      const logWithStyle = (style: string, ...messages: any[]) => {
+        if (this.color) {
+          console.log(style, ...messages);
+        } else {
+          console.log(...messages);
+        }
+      };
 
-      console.log(style, `${method}: ${url} - ${status}`);
+      logWithStyle(style, `${method}: ${url} - ${status}`);
 
       if (this.showRequest) {
         if (search != null) {
-          console.log(titleStyle, 'search');
+          logWithStyle(titleStyle, "search");
           console.log(search);
         }
 
         if (params != null) {
-          console.log(titleStyle, 'params');
+          logWithStyle(titleStyle, "params");
           console.log(params);
         }
 
         if (data != null) {
-          console.log(titleStyle, 'body');
+          logWithStyle(titleStyle, "body");
           console.log(data);
         }
       }
 
       if (this.showResponse) {
-        console.log(titleStyle, 'response');
+        logWithStyle(titleStyle, "response");
 
         if (isSuccess) {
           console.log(response);
@@ -186,37 +212,44 @@ class AxiosLogger {
     }
 
     const style = isSuccess
-      ? 'background: #eee; border-left: 10px solid #2CA58D; color: #2D4E19; padding: 2px 10px'
-      : 'background: #eee; border-left: 10px solid #A53860; color: #69140E; padding: 2px 10px';
+      ? "background: #eee; border-left: 10px solid #2CA58D; color: #2D4E19; padding: 2px 10px"
+      : "background: #eee; border-left: 10px solid #A53860; color: #69140E; padding: 2px 10px";
 
     console.groupCollapsed(`%c${method}: ${path} - ${status}`, style);
 
     if (search != null) {
-      console.log('search :', search);
+      console.log("search :", search);
     }
 
     if (params != null) {
-      console.log('params :', params);
+      console.log("params :", params);
     }
 
     if (data != null) {
-      console.log(' data  :', data);
+      console.log(" data  :", data);
     }
 
-    console.log('%cresponse\n', 'padding-bottom: 0.5em; font-weight: bold', response);
+    console.log(
+      "%cresponse\n",
+      "padding-bottom: 0.5em; font-weight: bold",
+      response
+    );
     console.groupEnd();
   }
 
   /**
    * Print request canceled log
    */
-  private printCancelLog (message = '(no message)'): void {
+  private printCancelLog(message = "(no message)"): void {
     if (this.isServer) {
-      console.log('\x1b[43m \x1b[0m \x1b[33m%s\x1b[0m', `Canceled - ${message}`);
+      console.log(
+        "\x1b[43m \x1b[0m \x1b[33m%s\x1b[0m",
+        `Canceled - ${message}`
+      );
     } else {
       console.log(
         `%ccanceled - ${message}`,
-        'background: #eee; border-left: 10px solid #FFA552; color: #8C5A2D; padding: 2px 10px; font-weight: bold'
+        "background: #eee; border-left: 10px solid #FFA552; color: #8C5A2D; padding: 2px 10px; font-weight: bold"
       );
     }
   }
@@ -227,7 +260,7 @@ class AxiosLogger {
   private wrapRejectIfNeeded(response: AxiosResponse): AxiosResponse;
   private wrapRejectIfNeeded(response: AxiosError): Promise<AxiosError>;
   private wrapRejectIfNeeded(response: AxiosResponse | AxiosError) {
-    const isAxiosError = 'isAxiosError' in response && response.isAxiosError;
+    const isAxiosError = "isAxiosError" in response && response.isAxiosError;
 
     return isAxiosError ? Promise.reject<AxiosError>(response) : response;
   }
@@ -236,14 +269,14 @@ class AxiosLogger {
    * Optimize displaying path
    */
   private optimizePath(url: string): string {
-    const path = url.replace(/^([^?]*).*/, '$1');
+    const path = url.replace(/^([^?]*).*/, "$1");
 
     if (!this.baseURL) {
       return path;
     }
 
     if (!Array.isArray(this.baseURL)) {
-      return path.replace(this.baseURL, '');
+      return path.replace(this.baseURL, "");
     }
 
     for (let i = 0; i < path.length; i++) {
@@ -253,7 +286,7 @@ class AxiosLogger {
         continue;
       }
 
-      return path.replace(basePath, '');
+      return path.replace(basePath, "");
     }
 
     return path;
