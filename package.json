@@ -1,6 +1,6 @@
 {
   "name": "@lollipop-onl/axios-logger",
-  "version": "0.2.2",
+  "version": "0.2.1",
   "description": "Pretty Axios logger",
   "keywords": [
     "axios"
