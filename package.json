@@ -29,16 +29,16 @@
   },
   "devDependencies": {
     "@team-lab/eslint-config": "^0.1.1",
-    "@types/node": "^14.14.26",
-    "@typescript-eslint/eslint-plugin": "^4.15.0",
-    "@typescript-eslint/parser": "^4.15.0",
-    "concurrently": "^5.3.0",
+    "@types/node": "^15.12.4",
+    "@typescript-eslint/eslint-plugin": "^4.27.0",
+    "@typescript-eslint/parser": "^4.27.0",
+    "concurrently": "^6.2.0",
     "cross-env": "^7.0.3",
-    "eslint": "^7.19.0",
+    "eslint": "^7.29.0",
     "eslint-config-typescript": "^3.0.0",
-    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-import": "^2.23.4",
     "parcel-bundler": "^1.12.4",
-    "typescript": "^4.1.5"
+    "typescript": "^4.3.4"
   },
   "peerDependencies": {
     "axios": "^0.21.1"
